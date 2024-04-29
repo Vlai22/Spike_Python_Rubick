@@ -85,17 +85,37 @@ async def scan_full():
         await for j in range(len(COLOR)):#перечисление всех цветов
                 if now_color == color_color_senser[j]:#поиск номера цвета с сентера с нынешним цветом
                     scan_3x3(j)
+                    if i == 3: 
+                        rotate(90)
+                    turn()
+                    if i == 4: 
+                        turn()
     await for i in range(6):
             for j in range(9):
                 if j != 4:
                     for k in range(6):
                         if cube_color_pos[i][j] is color_color_senser[k]:
                             cube_color_pos[i][j] = COLOR[k]
-        
+async def assembly_white():
+    white_cross[] = {"W-O": 0, "W-B": 0, "W-G": 0, "W-R": 0}
+    white_cubs[]
+    await for i in range(6):
+            for j in range(0,5):
+                if cube_color_pos[i][j*2-1] == COLOR[0]:
+                    if j = 1:
+                        if i = 0:
+
+                    white_cubs.append[str(str(i) + " " + str(j))]
+
+
+                
+
+
         
 
 async def main():
     runloop.run(rotate(90))
     runloop.run(turn())   
-runloop.run(scan())
+runloop.run(scan_full())
+print(cube_color_pos)
     print("Ошибка")
