@@ -125,24 +125,40 @@ async def assembly_white():
                     i+=1
         for j in range(4):#поиск 4 частей креста кубика
             if white_cubes_pos[j][0] >= 0 and white_cubes_pos[j][0] <=3:#если сторона кубика принадлежит 1 из у граней идущих по порядку
-                if white_cubes_pos[j][1] == 1:
-                    if white_cubes_pos[j][0] !=3 
-                        white_cubes_pos[j][2] = white_cubes_pos[j][0] + 1
-                        white_cubes_pos[j][3] = 5
-                    else:
+                if white_cubes_pos[j][1] == 1:#если нижняя сторона креста кубика 
+                    if white_cubes_pos[j][0] !=3:#проверяем равно ли 3 или нет то есть равно ли крайней гране из 4
+                        white_cubes_pos[j][2] = white_cubes_pos[j][0] + 1 #если не равно третьему то берём слудующую сторону 
+                        white_cubes_pos[j][3] = 5#вернхий верхнюю грань
+                    else:#если грань крайняя то берём перую и её верхний куб 
                         white_cubes_pos[j][2] = 0
                         white_cubes_pos[j][3] = 5
-                elif white_cubes_pos[j][1] == 5
-                    if white_cubes_pos[j][0] !=0:
-                        white_cubes_pos[j][2] = white_cubes_pos[j][0] - 1
-                        white_cubes_pos[j][3] = 1 
-                    else: 
+                elif white_cubes_pos[j][1] == 5:#если гнать верхняя 
+                    if white_cubes_pos[j][0] !=0:#определяем не последняя ли сторона
+                        white_cubes_pos[j][2] = white_cubes_pos[j][0] - 1#если не последняя то выбираем предыдущую сторону 
+                        white_cubes_pos[j][3] = 1#и выбираем нижнюю грань 
+                    else: #если сторона первая то выбираем четвёртую сторону 
                         white_cubes_pos[j][2] = 3
+                        white_cubes_pos[j][3] = 1#нижнюю грань 
+                elif white_cubes_pos[j][1] == 3:#если у нас правая грань 
+                    white_cubes_pos[j][2] = 4#то выбираем в любом случае четвёртую сторону 
+                    if white_cubes_pos[j][0] == 0:#проверяем на какой из сторон белая грань и соответсвно выбираем соседа
+                        white_cubes_pos[j][3] = 5
+                    elif white_cubes_pos[j][0] == 1:
+                        white_cubes_pos[j][3] = 7
+                    elif white_cubes_pos[j][0] == 2:
                         white_cubes_pos[j][3] = 1
-                elif white_cubes_pos[j][1] == 3:
-                    white_cubes_posp[j][2] == 4
-                    if white_cubes_pos 
-
+                    else:
+                        white_cubes_pos[j][3] = 3
+                else: #если у нас левая грань 
+                    white_cubes_pos[j][2] = 5#то выбираем в любом случае четвёртую сторону 
+                    if white_cubes_pos[j][0] == 0:#проверяем на какой из сторон белая грань и соответсвно выбираем соседа
+                        white_cubes_pos[j][3] = 1
+                    elif white_cubes_pos[j][0] == 1:
+                        white_cubes_pos[j][3] = 7
+                    elif white_cubes_pos[j][0] == 2:
+                        white_cubes_pos[j][3] = 5
+                    else:
+                        white_cubes_pos[j][3] = 3
             else:
                 if white_cubes_pos[j][0] >= 0 and white_cubes_pos <= 3:
                     
