@@ -15,21 +15,87 @@ cube_color_pos = 0
 #массив соотносящихся значений которые выдаёт color_sensor с массивом COLOR то есть
 #число выдаваемое функцией сканирования цвета соответствует цвету из массива
 posituon_scan_base = 0
+COLOR_reletive_pos = {"WHITE": 0, "ORANGE": 0, "GREEN": 0, "RED": 0, "BLUE": 0, "YELLOW": 0}
 #констуркиця await подразумевает собой что наша программа откладывает выполнение программы
 #до тех пор пока мы не выполним какую либо функцию или что либо
 #также необходимо функцию назначать async то есть асинхронной
 #то есть что бы откладывать на потом программу необходимо прописывать ключевое слово о том
 #что мы выполняем это с возможностью отложения на потом программы
-async def turn():
+async def turn(index):
     #функция поворота кубика
-    await motor.run_to_relative_position(port.F, -180, 600,,motor.SMART_BRAKE)#поднятие механизма(поворот кубика)
-    await motor.run_to_relative_position(port.F, 180, 600,,motor.SMART_BRAKE)#опускание механизма(доворот кубика)
-
+    for i in range(index):#количество повторений переворотов(для удобства)
+        await motor.run_to_relative_position(port.F, -180, 600,,motor.SMART_BRAKE)#поднятие механизма(поворот кубика)
+        await motor.run_to_relative_position(port.F, 180, 600,,motor.SMART_BRAKE)#опускание механизма(доворот кубика)
 async def rotate(deg):
     #функция поворота кубика
     await motor.run_to_relative_position(port.D, int(deg)*3, 700,,motor.SMART_BRAKE)#значения поворота уможается на 3 так как
     #передаточное отношения поворота большого мотока к повороту корзины с кубиком равно 3 к 1
-
+async def fixation():
+    #функия накидывания механизма на кубик и его фиксации
+    await motor.run_to_relative_position(port.F, -90, 600,,motor.SMART_BRAKE)#опускание механизма на кубик
+async def return_fixation():
+    #функия cкидывания механизма c кубик
+    await motor.run_to_relative_position(port.F, 90, 600,,motor.SMART_BRAKE)#поднятие механизма с кубика
+async def move_cube(cube_color_pos, i, color_move, COLOR_reletive_pos):
+    i_pos = 0
+    if i == 0:
+        await fixation()
+        await rotate(-90)
+        await return_fixation()
+        for i in range(len(COLOR_reletive_pos)):
+            if COLOR_reletive_pos[i] == color_move:
+                i_pos == i
+        #изменение положения кубов
+        cub_now = cube_color_pos[i_pos][7]
+        corner_now = cube_color_pos[i_pos][8]
+        cube_color_pos[i_pos][7] = cube_color_pos[i_pos][1]
+        cube_color_pos[i_pos][8] = cube_color_pos[i_pos][2]
+        cube_color_pos[i_pos][1] = cube_color_pos[i_pos][3]
+        cube_color_pos[i_pos][2] = cube_color_pos[i_pos][4]
+        cube_color_pos[ipo][3] = cube_color_pos[i_pos][5]
+        cube_color_pos[i_pos][4] = cube_color_pos[i_pos][6]
+        cube_color_pos[i_pos][5] = cub_now
+        cube_color_pos[i_pos][6] = corner_now
+        if i_pos >= 0 and i_pos <= 3:
+            if i_pos = 0:
+                cub_now = cube_color_pos[5][7]
+                corner_now = cube_color_pos[5][6]
+                cube_color_pos[5][7] = cube_color_pos[1][5]
+                cube_color_pos[5][6] = cube_color_pos[1][4]
+                cube_color_pos[i_pos + 1][5] = cube_color_pos[4][7]
+                cube_color_pos[i_pos + 1][4] = cube_color_pos[4][6]
+                cube_color_pos[4][7] = cube_color_pos[3][1]
+                cube_color_pos[4][6] = cube_color_pos[3][8]
+                cube_color_pos[3][1] = cub_now
+                cube_color_pos[3][8] = corner_now
+            elif i_pos = 3:
+                cub_now = cube_color_pos[5][1]
+                corner_now = cube_color_pos[5][8]
+                cube_color_pos[5][1] = cube_color_pos[0][5]
+                cube_color_pos[5][8] = cube_color_pos[0][4]
+                cube_color_pos[0][5] = cube_color_pos[4][5]
+                cube_color_pos[0][4] = cube_color_pos[4][4]
+                cube_color_pos[4][5] = cube_color_pos[i_pos - 1][1]
+                cube_color_pos[4][4] = cube_color_pos[i_pos - 1][8]
+                cube_color_pos[i_pos - 1][1] = cub_now
+                cube_color_pos[i_pos - 1][8] = corner_now
+            elif i_pos = 2:
+                cub_now = cube_color_pos[5][2]
+                corner_now = cube_color_pos[5][3]
+                cube_color_pos[5][1] = cube_color_pos[i_pos + 1][5]
+                cube_color_pos[5][8] = cube_color_pos[i_pos + 1][4]
+                cube_color_pos[i_pos + 1][5] = cube_color_pos[4][5]
+                cube_color_pos[i_pos + 1][4] = cube_color_pos[4][4]
+                cube_color_pos[4][5] = cube_color_pos[i_pos - 1][1]
+                cube_color_pos[4][4] = cube_color_pos[i_pos - 1][8]
+                cube_color_pos[i_pos - 1][1] = cub_now
+                cube_color_pos[i_pos - 1][8] = corner_now
+    elif i == 1:
+        await fixation()
+        await rotate(180)
+        await return_fixation()
+    else:
+        print("Error, move") 
 def color_rgbi(rgbi):
     #фунция получения цвета кубика рубика(необходимо донастроить!!!)
     if rgbi[0] > 450 and rgbi[0] < 700 and rgbi[1] > 100 and rgbi[1] < 300 and rgbi[2] > 150 and rgbi[2] < 400:
@@ -109,63 +175,221 @@ async def scan_full():
             await rotate(90)
         await turn()
         if i == 4:#если нынешняя сторона сторона 5 то переворачиваем дважды для выбора последней стороны 
-            await turn()
+            await turn(1)
 
+def cube_edge_search(eage_cubes_pos, index):
+    for j in range(index):#поиск 4 частей креста кубика
+        if eage_cubes_pos[j][0] >= 0 and eage_cubes_pos[j][0] <=3:#если сторона кубика принадлежит 1 из у граней идущих по порядку
+            if eage_cubes_pos[j][1] == 1:#если нижняя сторона креста кубика 
+                if eage_cubes_pos[j][0] !=3:#проверяем равно ли 3 или нет то есть равно ли крайней гране из 4
+                    eage_cubes_pos[j][2] = eage_cubes_pos[j][0] + 1 #если не равно третьему то берём слудующую сторону 
+                    eage_cubes_pos[j][3] = 5#вернхий верхнюю грань
+                else:#если грань крайняя то берём перую и её верхний куб 
+                    eage_cubes_pos[j][2] = 0
+                    eage_cubes_pos[j][3] = 5
+            elif eage_cubes_pos[j][1] == 5:#если гнать верхняя 
+                if eage_cubes_pos[j][0] !=0:#определяем не последняя ли сторона
+                    eage_cubes_pos[j][2] = eage_cubes_pos[j][0] - 1#если не последняя то выбираем предыдущую сторону 
+                    eage_cubes_pos[j][3] = 1#и выбираем нижнюю грань 
+                else: #если сторона первая то выбираем четвёртую сторону 
+                    eage_cubes_pos[j][2] = 3
+                    eage_cubes_pos[j][3] = 1#нижнюю грань 
+            elif eage_cubes_pos[j][1] == 3:#если у нас правая грань 
+                eage_cubes_pos[j][2] = 4#то выбираем в любом случае четвёртую сторону 
+                if eage_cubes_pos[j][0] == 0:#проверяем на какой из сторон белая грань и соответсвно выбираем соседа
+                    eage_cubes_pos[j][3] = 5
+                elif eage_cubes_pos[j][0] == 1:
+                    eage_cubes_pos[j][3] = 7
+                elif eage_cubes_pos[j][0] == 2:
+                    eage_cubes_pos[j][3] = 1
+                else:
+                    eage_cubes_pos[j][3] = 3
+            else: #если у нас левая грань 
+                eage_cubes_pos[j][2] = 5#то выбираем в любом случае четвёртую сторону 
+                if eage_cubes_pos[j][0] == 0:#проверяем на какой из сторон белая грань и соответсвно выбираем соседа
+                    eage_cubes_pos[j][3] = 1
+                elif eage_cubes_pos[j][0] == 1:
+                    eage_cubes_pos[j][3] = 7
+                elif eage_cubes_pos[j][0] == 2:
+                    eage_cubes_pos[j][3] = 5
+                else:
+                    eage_cubes_pos[j][3] = 3
+        elif eage_cubes_pos[j][0] == 4:
+            if eage_cubes_pos[j][0] == 1:#нижняя грань стороны 
+                eage_cubes_pos[j][2] = 2
+            elif eage_cubes_pos[j][0] == 3:#правая грань стороны
+                eage_cubes_pos[j][2] = 3
+            elif eage_cubes_pos[j][0] == 5:#верхняя грань стороны 
+                eage_cubes_pos[j][2] = 0
+            else:#левая грань стороны
+                eage_cubes_pos[j][2] = 1
+            eage_cubes_pos[j][3] = 3
+        else: 
+            if eage_cubes_pos[j][0] == 1:#нижняя грань стороны 
+                eage_cubes_pos[j][2] = 0
+            elif eage_cubes_pos[j][0] == 3:#правая грань стороны
+                eage_cubes_pos[j][2] = 3
+            elif eage_cubes_pos[j][0] == 5:#верхняя грань стороны 
+                eage_cubes_pos[j][2] = 2
+            else:#левая грань стороны
+                eage_cubes_pos[j][2] = 1
+            eage_cubes_pos[j][3] = 7
+    return eage_cubes_pos
+
+def cube_corner_search():
+
+def search_color(color):
+    
 async def assembly_white():
     #функция сбора белой стороны
     white_cubes_pos = 0 
     pos_i = 0
-    pos_j = 0 
-    for i in range(4):#сборка 4 граней белого креста
-        for j in range(6):#поиск белых кубов 
+    for i in range(12):#поиск 12 граней
+        for j in range(6): 
             for k in range(9):
-                if cube_color_pos[j][k] == "WHITE":
+                if cube_color_pos[j][k] == "WHITE":#поиск белых кубов
                     white_cubes_pos[i][0] = j#если мы наши белый куб то записываем первым сторону на которой он 
                     white_cubes_pos[i][1] = k#вторым позиция на которой он находится 
-                    i+=1
-        for j in range(4):#поиск 4 частей креста кубика
-            if white_cubes_pos[j][0] >= 0 and white_cubes_pos[j][0] <=3:#если сторона кубика принадлежит 1 из у граней идущих по порядку
-                if white_cubes_pos[j][1] == 1:#если нижняя сторона креста кубика 
-                    if white_cubes_pos[j][0] !=3:#проверяем равно ли 3 или нет то есть равно ли крайней гране из 4
-                        white_cubes_pos[j][2] = white_cubes_pos[j][0] + 1 #если не равно третьему то берём слудующую сторону 
-                        white_cubes_pos[j][3] = 5#вернхий верхнюю грань
-                    else:#если грань крайняя то берём перую и её верхний куб 
-                        white_cubes_pos[j][2] = 0
-                        white_cubes_pos[j][3] = 5
-                elif white_cubes_pos[j][1] == 5:#если гнать верхняя 
-                    if white_cubes_pos[j][0] !=0:#определяем не последняя ли сторона
-                        white_cubes_pos[j][2] = white_cubes_pos[j][0] - 1#если не последняя то выбираем предыдущую сторону 
-                        white_cubes_pos[j][3] = 1#и выбираем нижнюю грань 
-                    else: #если сторона первая то выбираем четвёртую сторону 
-                        white_cubes_pos[j][2] = 3
-                        white_cubes_pos[j][3] = 1#нижнюю грань 
-                elif white_cubes_pos[j][1] == 3:#если у нас правая грань 
-                    white_cubes_pos[j][2] = 4#то выбираем в любом случае четвёртую сторону 
-                    if white_cubes_pos[j][0] == 0:#проверяем на какой из сторон белая грань и соответсвно выбираем соседа
-                        white_cubes_pos[j][3] = 5
-                    elif white_cubes_pos[j][0] == 1:
-                        white_cubes_pos[j][3] = 7
-                    elif white_cubes_pos[j][0] == 2:
-                        white_cubes_pos[j][3] = 1
-                    else:
-                        white_cubes_pos[j][3] = 3
-                else: #если у нас левая грань 
-                    white_cubes_pos[j][2] = 5#то выбираем в любом случае четвёртую сторону 
-                    if white_cubes_pos[j][0] == 0:#проверяем на какой из сторон белая грань и соответсвно выбираем соседа
-                        white_cubes_pos[j][3] = 1
-                    elif white_cubes_pos[j][0] == 1:
-                        white_cubes_pos[j][3] = 7
-                    elif white_cubes_pos[j][0] == 2:
-                        white_cubes_pos[j][3] = 5
-                    else:
-                        white_cubes_pos[j][3] = 3
-            else:
-                if white_cubes_pos[j][0] >= 0 and white_cubes_pos <= 3:
-                    
-                else: 
+                elif cube_color_pos[j][k] == "YELLOW"#поиск желтых кубов 
+                    white_cubes_pos[i][0] = j#если мы наши белый куб то записываем первым сторону на которой он 
+                    white_cubes_pos[i][1] = k#вторым позиция на которой он находится 
+                elif cube_color_pos[j][k] == "BLUE" or cube_color_pos[j][k] == "GREEN"#поиск кубов не принадлежащих белым или желтым но являющиеся граням
+                    if j >= 0 and j <= 3:
+                        if k == 1:
+                            if j != 3:
+                                if cube_color_pos[j+1][5] != "YELLOW" and cube_color_pos[j+1][5] != "WHITE":
+                                    white_cubes_pos[i][0] = j#если мы наши белый куб то записываем первым сторону на которой он 
+                                    white_cubes_pos[i][1] = k#вторым позиция на которой он находится
+                            else: 
+                                if cube_color_pos[0][5] != "YELLOW" and cube_color_pos[0][5] != "WHITE":
+                                    white_cubes_pos[i][0] = j#если мы наши белый куб то записываем первым сторону на которой он 
+                                    white_cubes_pos[i][1] = k#вторым позиция на которой он находится
+                        elif k == 5:
+                            if j !=0:
+                                if cube_color_pos[j-1][1] != "YELLOW" and cube_color_pos[j-1][1] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                            else:
+                                if cube_color_pos[3][1] != "YELLOW" and cube_color_pos[3][1] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k 
+                        elif k == 3:
+                            if j == 0:
+                                if cube_color_pos[4][7] != "YELLOW" and cube_color_pos[4][7] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                            elif j == 1:
+                                if cube_color_pos[4][1] != "YELLOW" and cube_color_pos[4][1] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                            elif j == 2:
+                                if cube_color_pos[4][3] != "YELLOW" and cube_color_pos[4][3] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                            elif j == 3:
+                                 if cube_color_pos[4][5] != "YELLOW" and cube_color_pos[4][5] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                        elif k == 7:
+                            if j == 0:
+                                if cube_color_pos[4][7] != "YELLOW" and cube_color_pos[4][7] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                            elif j == 1:
+                                if cube_color_pos[4][5] != "YELLOW" and cube_color_pos[4][5] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                            elif j == 2:
+                                if cube_color_pos[4][3] != "YELLOW" and cube_color_pos[4][3] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                            elif j == 3:
+                                 if cube_color_pos[4][1] != "YELLOW" and cube_color_pos[4][1] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                    elif j == 4:
+                        if k == 1:
+                            if cube_color_pos[1][3] != "YELLOW" and cube_color_pos[1][3] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                        elif k == 5:
+                            if cube_color_pos[3][3] != "YELLOW" and cube_color_pos[3][3] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                        elif k == 3:
+                            if cube_color_pos[2][3] != "YELLOW" and cube_color_pos[2][3] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                        elif k == 7:
+                            if cube_color_pos[0][3] != "YELLOW" and cube_color_pos[0][3] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                    elif j == 5:
+                        if k == 1:
+                            if cube_color_pos[3][3] != "YELLOW" and cube_color_pos[3][3] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                        elif k == 5:
+                            if cube_color_pos[1][3] != "YELLOW" and cube_color_pos[1][3] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                        elif k == 3:
+                            if cube_color_pos[2][3] != "YELLOW" and cube_color_pos[2][3] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
+                        elif k == 7:
+                            if cube_color_pos[0][3] != "YELLOW" and cube_color_pos[0][3] != "WHITE":
+                                    white_cubes_pos[i][0] = j
+                                    white_cubes_pos[i][1] = k
 
-
-
+    white_cubes_pos = cube_edge_search(white_cubes_pos, 4)
+    for i in range(6):#поиск относительной сканирования позиции цветов
+        for j in range(6):
+            if cube_color_pos[i][0] == COLOR[j]:
+                COLOR_reletive_pos[j] = i
+    for i in range(4):
+        if white_cubes_pos[i][0] != COLOR_reletive_pos.WHITE:
+            if white_cubes_pos[i][0] == COLOR_reletive_pos.YELLOW:#алгоритм для желтого цвета
+                if i == 0:
+                    if COLOR_reletive_pos.YELLOW >= 0 and COLOR_reletive_pos.YELLOW <= 3:
+                        if COLOR_reletive_pos.YELLOW == 0:
+                            await rotate(-90)
+                        elif COLOR_reletive_pos.YELLOW == 1:
+                            await rotate(-180)
+                        elif COLOR_reletive_pos.YELLOW == 2:
+                            await rotate(90)
+                        await turn(1)
+                    elif COLOR_reletive_pos.YELLOW == 4:
+                        await turn(2)
+                if white_cubes_pos[i][1] == 1:
+                    await turn(3)
+                    await fixation()
+                    await rotate(180)
+                    await return_fixation()
+                    await turn(2)
+                elif white_cubes_pos[i][1] == 3:
+                    await rotate(90)
+                    await turn(3)
+                    await fixation()
+                    await rotate(180)
+                    await return_fixation()
+                    await turn(2)
+                elif white_cubes_pos[i][1] == 5:
+                    await turn(1)
+                    await fixation()
+                    await rotate(180)
+                    await return_fixation()
+                    await turn(2)
+                elif white_cubes_pos[i][1] == 7:
+                    await rotate(90)
+                    await turn(1)
+                    await fixation()
+                    await rotate(180)
+                    await return_fixation()
+                    await turn(2)
+                else:
+                    print("Not found on yellow edge white cubs")
+            elif white_cubes_pos[i][1] == 5:
 
 
 async def main():
