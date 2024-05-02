@@ -57,7 +57,7 @@ async def move_cube(cube_color_pos, i, color_move, COLOR_reletive_pos):
         cube_color_pos[i_pos][5] = cub_now
         cube_color_pos[i_pos][6] = corner_now
         if i_pos >= 0 and i_pos <= 3:
-            if i_pos = 0:
+            if i_pos == 0:
                 cub_now = cube_color_pos[5][7]
                 corner_now = cube_color_pos[5][6]
                 cube_color_pos[5][7] = cube_color_pos[1][5]
@@ -68,7 +68,7 @@ async def move_cube(cube_color_pos, i, color_move, COLOR_reletive_pos):
                 cube_color_pos[4][6] = cube_color_pos[3][8]
                 cube_color_pos[3][1] = cub_now
                 cube_color_pos[3][8] = corner_now
-            elif i_pos = 3:
+            elif i_pos == 3:
                 cub_now = cube_color_pos[5][1]
                 corner_now = cube_color_pos[5][8]
                 cube_color_pos[5][1] = cube_color_pos[0][5]
@@ -79,17 +79,28 @@ async def move_cube(cube_color_pos, i, color_move, COLOR_reletive_pos):
                 cube_color_pos[4][4] = cube_color_pos[i_pos - 1][8]
                 cube_color_pos[i_pos - 1][1] = cub_now
                 cube_color_pos[i_pos - 1][8] = corner_now
-            elif i_pos = 2:
+            elif i_pos == 2:
                 cub_now = cube_color_pos[5][2]
                 corner_now = cube_color_pos[5][3]
-                cube_color_pos[5][1] = cube_color_pos[i_pos + 1][5]
-                cube_color_pos[5][8] = cube_color_pos[i_pos + 1][4]
-                cube_color_pos[i_pos + 1][5] = cube_color_pos[4][5]
-                cube_color_pos[i_pos + 1][4] = cube_color_pos[4][4]
-                cube_color_pos[4][5] = cube_color_pos[i_pos - 1][1]
-                cube_color_pos[4][4] = cube_color_pos[i_pos - 1][8]
+                cube_color_pos[5][2] = cube_color_pos[i_pos + 1][5]
+                cube_color_pos[5][3] = cube_color_pos[i_pos + 1][4]
+                cube_color_pos[i_pos + 1][5] = cube_color_pos[4][3]
+                cube_color_pos[i_pos + 1][4] = cube_color_pos[4][2]
+                cube_color_pos[4][3] = cube_color_pos[i_pos - 1][1]
+                cube_color_pos[4][2] = cube_color_pos[i_pos - 1][2]
                 cube_color_pos[i_pos - 1][1] = cub_now
-                cube_color_pos[i_pos - 1][8] = corner_now
+                cube_color_pos[i_pos - 1][2] = corner_now
+            elif i_pos == 1:
+                cub_now = cube_color_pos[5][5]
+                corner_now = cube_color_pos[5][4]
+                cube_color_pos[5][5] = cube_color_pos[i_pos + 1][5]
+                cube_color_pos[5][4] = cube_color_pos[i_pos + 1][4]
+                cube_color_pos[i_pos + 1][5] = cube_color_pos[4][1]
+                cube_color_pos[i_pos + 1][4] = cube_color_pos[4][8]
+                cube_color_pos[4][1] = cube_color_pos[i_pos - 1][1]
+                cube_color_pos[4][8] = cube_color_pos[i_pos - 1][2]
+                cube_color_pos[i_pos - 1][1] = cub_now
+                cube_color_pos[i_pos - 1][2] = corner_now
     elif i == 1:
         await fixation()
         await rotate(180)
