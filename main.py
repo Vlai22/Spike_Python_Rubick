@@ -11,7 +11,8 @@ qw = 30 #Сдвиг назад на клетку (нужно значени)
 
 #переменные влада
 # массив расположения цветов в кубике
-cube_color_pos = 0
+cube_color_pos = [[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0]]
 #массив соотносящихся значений которые выдаёт color_sensor с массивом COLOR то есть
 #число выдаваемое функцией сканирования цвета соответствует цвету из массива
 posituon_scan_base = 0
@@ -24,18 +25,19 @@ COLOR_reletive_pos = {"WHITE": 0, "ORANGE": 0, "GREEN": 0, "RED": 0, "BLUE": 0, 
 async def turn(index):
     #функция поворота кубика
     for i in range(index):#количество повторений переворотов(для удобства)
-        await motor.run_to_relative_position(port.F, -180, 600,,motor.SMART_BRAKE)#поднятие механизма(поворот кубика)
-        await motor.run_to_relative_position(port.F, 180, 600,,motor.SMART_BRAKE)#опускание механизма(доворот кубика)
+        await motor.run_for_degrees(port.F, -180, 450)#поднятие механизма(поворот кубика)
+        time.sleep_ms(10)
+        await motor.run_for_degrees(port.F, 180, 450)#опускание механизма(доворот кубика)
 async def rotate(deg):
     #функция поворота кубика
-    await motor.run_to_relative_position(port.D, int(deg)*3, 700,,motor.SMART_BRAKE)#значения поворота уможается на 3 так как
+    await motor.run_for_degrees(port.D, int(deg)*3, 600)#значения поворота уможается на 3 так как
     #передаточное отношения поворота большого мотока к повороту корзины с кубиком равно 3 к 1
 async def fixation():
     #функия накидывания механизма на кубик и его фиксации
-    await motor.run_to_relative_position(port.F, -90, 600,,motor.SMART_BRAKE)#опускание механизма на кубик
+    await motor.run_for_degrees(port.F, -90, 500)#опускание механизма на кубик
 async def return_fixation():
     #функия cкидывания механизма c кубик
-    await motor.run_to_relative_position(port.F, 90, 600,,motor.SMART_BRAKE)#поднятие механизма с кубика
+    await motor.run_for_degrees(port.F, 90, 500)#поднятие механизма с кубика
 async def move_cube(cube_color_pos, i, color_move, COLOR_reletive_pos):
     i_pos = 0
     if i == 0:
@@ -52,7 +54,7 @@ async def move_cube(cube_color_pos, i, color_move, COLOR_reletive_pos):
         cube_color_pos[i_pos][8] = cube_color_pos[i_pos][2]
         cube_color_pos[i_pos][1] = cube_color_pos[i_pos][3]
         cube_color_pos[i_pos][2] = cube_color_pos[i_pos][4]
-        cube_color_pos[ipo][3] = cube_color_pos[i_pos][5]
+        cube_color_pos[i_pos][3] = cube_color_pos[i_pos][5]
         cube_color_pos[i_pos][4] = cube_color_pos[i_pos][6]
         cube_color_pos[i_pos][5] = cub_now
         cube_color_pos[i_pos][6] = corner_now
@@ -106,20 +108,20 @@ async def move_cube(cube_color_pos, i, color_move, COLOR_reletive_pos):
         await rotate(180)
         await return_fixation()
     else:
-        print("Error, move") 
+        print("Error, move")
 def color_rgbi(rgbi):
     #фунция получения цвета кубика рубика(необходимо донастроить!!!)
-    if rgbi[0] > 450 and rgbi[0] < 700 and rgbi[1] > 100 and rgbi[1] < 300 and rgbi[2] > 150 and rgbi[2] < 400:
+    if rgbi[0] > 450 and rgbi[0] < 700 and rgbi[1] > 100 and rgbi[1] < 400 and rgbi[2] > 150 and rgbi[2] < 400:
         return "RED"
-    if rgbi[0] > 800 and rgbi[0] < 1100 and rgbi[1] > 350 and rgbi[1] < 600 and rgbi[2] > 300 and rgbi[2] < 600:
+    if rgbi[0] > 700 and rgbi[0] < 1100 and rgbi[1] > 300 and rgbi[1] < 600 and rgbi[2] > 300 and rgbi[2] < 600:
         return "ORANGE"
-    if rgbi[0] > 200 and rgbi[0] < 350 and rgbi[1] > 350 and rgbi[1] < 700 and rgbi[2] > 200 and rgbi[2] < 500:
+    elif rgbi[0] > 200 and rgbi[0] < 350 and rgbi[1] > 350 and rgbi[1] < 700 and rgbi[2] > 200 and rgbi[2] < 500:
         return "GREEN"
-    if rgbi[0] > 50 and rgbi[0] < 350 and rgbi[1] > 250 and rgbi[1] < 600 and rgbi[2] > 350 and rgbi[2] < 800:
+    elif rgbi[0] > 50 and rgbi[0] < 350 and rgbi[1] > 250 and rgbi[1] < 600 and rgbi[2] > 350 and rgbi[2] < 800:
         return "BLUE"
-    if rgbi[0] > 700 and rgbi[0] < 1000 and rgbi[1] > 600 and rgbi[1] < 1000 and rgbi[2] > 550 and rgbi[2] < 800:
+    elif rgbi[0] > 800 and rgbi[0] < 1100 and rgbi[1] > 700 and rgbi[1] < 1100 and rgbi[2] > 550 and rgbi[2] < 800:
         return "YELLOW"
-    if rgbi[0] > 1000 and rgbi[0] < 1200 and rgbi[1] > 1000 and rgbi[1] < 1200 and rgbi[2] > 900 and rgbi[2] < 1200:
+    elif rgbi[0] > 1000 and rgbi[0] < 1200 and rgbi[1] > 1000 and rgbi[1] < 1200 and rgbi[2] > 900 and rgbi[2] < 1200:
         return "WHITE"
 
 """async def scan():
@@ -139,74 +141,75 @@ def color_rgbi(rgbi):
         rotate()
     rotat(90)
     turn()"""
-async def scan_3x3(i):
+async def scan_3x3(i, cube_color_pos, posituon_scan_base):
     #функция сканирования одной стороны
-    await motor.run_for_degrees(port.B, -140, 500)#перемещаемся на кубик под центром
+    await motor.run_for_degrees(port.B, -130, 500)#перемещаемся на кубик под центром
     cube_color_pos[i][1] = color_rgbi(color_sensor.rgbi(port.A))#сканируем и записываем на соответсвующую грень
-    for j in range(7)
-        await rotate(45)#вращаем для счивывания каждого куба
-        if j%2 == 0 
-            await motor.run_for_degrees(port.B, -50, 600)#корректируем положение датчика цвета на крайний куб 
+    for j in range(7):
+        runloop.run(rotate(45))#вращаем для счивывания каждого куба
+        if j%2 == 0:
+            if j == 0 :
+                await motor.run_for_degrees(port.B, -60, 500)#корректируем положение датчика цвета на крайний куб
+            await motor.run_for_degrees(port.B, -30, 500)#корректируем положение датчика цвета на крайний куб
         else:
-            await motor.run_for_degrees(port.B, 50, 600)#корректируем положение датчика цвета на средний куб
+            await motor.run_for_degrees(port.B, 30, 500)#корректируем положение датчика цвета на средний куб
         cube_color_pos[i][j+2] = color_rgbi(color_sensor.rgbi(port.A))#сканируем и записываем на соответстсвующую грань
-    await rotate(45)#выравниваем куб
-    await motor.run_for_degrees(port.B, -350, 500)#возвращаем датчик цвета в положение чтения нижнего куба от центра
+    runloop.run(rotate(45))#выравниваем куб
+    await motor.run_for_degrees(port.B, -305, 500)#возвращаем датчик цвета в положение чтения нижнего куба от центра
 
-async def calibr():
+def calibr():
 #функция высталвения кубика в нулевое положение
     calibr_bool = False#переменная означающая завершение калибровки
     calibr_time = 0
-    while calibr_time < 300:#цикл выставления более 300 нажатий не может быть так как этого достаточно 
+    while not calibr_bool:#цикл выставления более 300 нажатий не может быть так как этого достаточно
     #для полноценного выставления нулевого положения
         calibr_time += 1#счётчик нажатия
         if button.pressed(button.LEFT) is True:
-            time_start = time.ticks_ms()#переменная времени для отслеживания длительного нажатия
-            while button.pressed(button.LEFT):#удерживание левой кнопки 
-                if time.ticks_ms() - time_start > 1000:#условие запуска сканирования
-                    calibr_bool = True
-                    break
-            if calibr_bool == False#если мы не удерживаем клавишу в течениии 1 секунды то чуть чуть поворачиваем корзину
-                await rotate(3)
+            runloop.run(rotate(3))#небольшой поворот в правую сторону
         if button.pressed(button.RIGHT) is True:
-            await rotate(-3)#небольшой поворот в правую сторону
+            runloop.run(rotate(-3))#небольшой поворот в правую сторону
         if calibr == True:#выход из цикла если условие сканирования сработало
             break
+        calibr_time = time.ticks_ms()
+        while button.pressed(button.LEFT):
+            if time.ticks_ms() - calibr_time > 1000:
+                calibr_bool = True
+                break
 
-async def scan_full():
+async def scan_full(cube_color_pos):
     #функция полного сканирования
     now_color = None#переменная для хранения цвета центра
+    posituon_scan_base = motor.relative_position(port.B)#конфигурация относитульного пложения с целью точной работы механизма
     for i in range(6):#перечисляем все грани
-        posituon_scan_base = motor.relative_position(port.B)+10#конфигурация относитульного пложения с целью точной работы механизма
-        await motor.run_to_relative_position(port.B, posituon_scan_base+485, 1000,,motor.SMART_BRAKE)#выставляем мотор на центер кубика рубика
-        now_color = color_rgbi(color_sensor.rgbi(port.A))#получаем цвет первой стороны сканирования 
-        cube_color_pos[i][0] = now_color#записываем сторону в массив и её первое значение которое означает центр
-        runloop.run(scan_3x3(i))#вызываем функцию сканирования одной стороны
+        await motor.run_for_degrees(port.B, 485, 1000)#выставляем мотор на центер кубика рубика
+        now_color = color_rgbi(color_sensor.rgbi(port.A))#получаем цвет первой стороны сканирования
+        cube_color_pos[i][0] = now_color #записываем сторону в массив и её первое значение которое означает центр
+        runloop.run(scan_3x3(i,cube_color_pos, posituon_scan_base))#вызываем функцию сканирования одной стороны
         if i == 3:#если наша сторона 4 то мы поворачиваем кубив в другую сторону с целью сканирования всех 6 граней
-            await rotate(90)
-        await turn()
-        if i == 4:#если нынешняя сторона сторона 5 то переворачиваем дважды для выбора последней стороны 
-            await turn(1)
+            runloop.run(rotate(90))
+        runloop.run(turn(1))
+        if i == 4:#если нынешняя сторона сторона 5 то переворачиваем дважды для выбора последней стороны
+            runloop.run(turn(1))
 
 def cube_edge_search(eage_cubes_pos, index):
     for j in range(index):#поиск 4 частей креста кубика
         if eage_cubes_pos[j][0] >= 0 and eage_cubes_pos[j][0] <=3:#если сторона кубика принадлежит 1 из у граней идущих по порядку
-            if eage_cubes_pos[j][1] == 1:#если нижняя сторона креста кубика 
+            if eage_cubes_pos[j][1] == 1:#если нижняя сторона креста кубика
                 if eage_cubes_pos[j][0] !=3:#проверяем равно ли 3 или нет то есть равно ли крайней гране из 4
-                    eage_cubes_pos[j][2] = eage_cubes_pos[j][0] + 1 #если не равно третьему то берём слудующую сторону 
+                    eage_cubes_pos[j][2] = eage_cubes_pos[j][0] + 1 #если не равно третьему то берём слудующую сторону
                     eage_cubes_pos[j][3] = 5#вернхий верхнюю грань
-                else:#если грань крайняя то берём перую и её верхний куб 
+                else:#если грань крайняя то берём перую и её верхний куб
                     eage_cubes_pos[j][2] = 0
                     eage_cubes_pos[j][3] = 5
-            elif eage_cubes_pos[j][1] == 5:#если гнать верхняя 
+            elif eage_cubes_pos[j][1] == 5:#если гнать верхняя
                 if eage_cubes_pos[j][0] !=0:#определяем не последняя ли сторона
-                    eage_cubes_pos[j][2] = eage_cubes_pos[j][0] - 1#если не последняя то выбираем предыдущую сторону 
-                    eage_cubes_pos[j][3] = 1#и выбираем нижнюю грань 
-                else: #если сторона первая то выбираем четвёртую сторону 
+                    eage_cubes_pos[j][2] = eage_cubes_pos[j][0] - 1#если не последняя то выбираем предыдущую сторону
+                    eage_cubes_pos[j][3] = 1#и выбираем нижнюю грань
+                else: #если сторона первая то выбираем четвёртую сторону
                     eage_cubes_pos[j][2] = 3
-                    eage_cubes_pos[j][3] = 1#нижнюю грань 
-            elif eage_cubes_pos[j][1] == 3:#если у нас правая грань 
-                eage_cubes_pos[j][2] = 4#то выбираем в любом случае четвёртую сторону 
+                    eage_cubes_pos[j][3] = 1#нижнюю грань
+            elif eage_cubes_pos[j][1] == 3:#если у нас правая грань
+                eage_cubes_pos[j][2] = 4#то выбираем в любом случае четвёртую сторону
                 if eage_cubes_pos[j][0] == 0:#проверяем на какой из сторон белая грань и соответсвно выбираем соседа
                     eage_cubes_pos[j][3] = 5
                 elif eage_cubes_pos[j][0] == 1:
@@ -215,8 +218,8 @@ def cube_edge_search(eage_cubes_pos, index):
                     eage_cubes_pos[j][3] = 1
                 else:
                     eage_cubes_pos[j][3] = 3
-            else: #если у нас левая грань 
-                eage_cubes_pos[j][2] = 5#то выбираем в любом случае четвёртую сторону 
+            else: #если у нас левая грань
+                eage_cubes_pos[j][2] = 5#то выбираем в любом случае четвёртую сторону
                 if eage_cubes_pos[j][0] == 0:#проверяем на какой из сторон белая грань и соответсвно выбираем соседа
                     eage_cubes_pos[j][3] = 1
                 elif eage_cubes_pos[j][0] == 1:
@@ -226,54 +229,49 @@ def cube_edge_search(eage_cubes_pos, index):
                 else:
                     eage_cubes_pos[j][3] = 3
         elif eage_cubes_pos[j][0] == 4:
-            if eage_cubes_pos[j][0] == 1:#нижняя грань стороны 
+            if eage_cubes_pos[j][0] == 1:#нижняя грань стороны
                 eage_cubes_pos[j][2] = 2
             elif eage_cubes_pos[j][0] == 3:#правая грань стороны
                 eage_cubes_pos[j][2] = 3
-            elif eage_cubes_pos[j][0] == 5:#верхняя грань стороны 
+            elif eage_cubes_pos[j][0] == 5:#верхняя грань стороны
                 eage_cubes_pos[j][2] = 0
             else:#левая грань стороны
                 eage_cubes_pos[j][2] = 1
             eage_cubes_pos[j][3] = 3
-        else: 
-            if eage_cubes_pos[j][0] == 1:#нижняя грань стороны 
+        else:
+            if eage_cubes_pos[j][0] == 1:#нижняя грань стороны
                 eage_cubes_pos[j][2] = 0
             elif eage_cubes_pos[j][0] == 3:#правая грань стороны
                 eage_cubes_pos[j][2] = 3
-            elif eage_cubes_pos[j][0] == 5:#верхняя грань стороны 
+            elif eage_cubes_pos[j][0] == 5:#верхняя грань стороны
                 eage_cubes_pos[j][2] = 2
             else:#левая грань стороны
                 eage_cubes_pos[j][2] = 1
             eage_cubes_pos[j][3] = 7
     return eage_cubes_pos
-
-def cube_corner_search():
-
-def search_color(color):
-    
 async def assembly_white():
     #функция сбора белой стороны
-    white_cubes_pos = 0 
+    white_cubes_pos = None
     pos_i = 0
     for i in range(12):#поиск 12 граней
-        for j in range(6): 
+        for j in range(6):
             for k in range(9):
                 if cube_color_pos[j][k] == "WHITE":#поиск белых кубов
-                    white_cubes_pos[i][0] = j#если мы наши белый куб то записываем первым сторону на которой он 
-                    white_cubes_pos[i][1] = k#вторым позиция на которой он находится 
-                elif cube_color_pos[j][k] == "YELLOW"#поиск желтых кубов 
-                    white_cubes_pos[i][0] = j#если мы наши белый куб то записываем первым сторону на которой он 
-                    white_cubes_pos[i][1] = k#вторым позиция на которой он находится 
+                    white_cubes_pos[i][0] = j#если мы наши белый куб то записываем первым сторону на которой он
+                    white_cubes_pos[i][1] = k#вторым позиция на которой он находится
+                elif cube_color_pos[j][k] == "YELLOW"#поиск желтых кубов
+                    white_cubes_pos[i][0] = j#если мы наши белый куб то записываем первым сторону на которой он
+                    white_cubes_pos[i][1] = k#вторым позиция на которой он находится
                 elif cube_color_pos[j][k] == "BLUE" or cube_color_pos[j][k] == "GREEN"#поиск кубов не принадлежащих белым или желтым но являющиеся граням
                     if j >= 0 and j <= 3:
                         if k == 1:
                             if j != 3:
                                 if cube_color_pos[j+1][5] != "YELLOW" and cube_color_pos[j+1][5] != "WHITE":
-                                    white_cubes_pos[i][0] = j#если мы наши белый куб то записываем первым сторону на которой он 
+                                    white_cubes_pos[i][0] = j#если мы наши белый куб то записываем первым сторону на которой он
                                     white_cubes_pos[i][1] = k#вторым позиция на которой он находится
-                            else: 
+                            else:
                                 if cube_color_pos[0][5] != "YELLOW" and cube_color_pos[0][5] != "WHITE":
-                                    white_cubes_pos[i][0] = j#если мы наши белый куб то записываем первым сторону на которой он 
+                                    white_cubes_pos[i][0] = j#если мы наши белый куб то записываем первым сторону на которой он
                                     white_cubes_pos[i][1] = k#вторым позиция на которой он находится
                         elif k == 5:
                             if j !=0:
@@ -283,7 +281,7 @@ async def assembly_white():
                             else:
                                 if cube_color_pos[3][1] != "YELLOW" and cube_color_pos[3][1] != "WHITE":
                                     white_cubes_pos[i][0] = j
-                                    white_cubes_pos[i][1] = k 
+                                    white_cubes_pos[i][1] = k
                         elif k == 3:
                             if j == 0:
                                 if cube_color_pos[4][7] != "YELLOW" and cube_color_pos[4][7] != "WHITE":
@@ -298,7 +296,7 @@ async def assembly_white():
                                     white_cubes_pos[i][0] = j
                                     white_cubes_pos[i][1] = k
                             elif j == 3:
-                                 if cube_color_pos[4][5] != "YELLOW" and cube_color_pos[4][5] != "WHITE":
+                                if cube_color_pos[4][5] != "YELLOW" and cube_color_pos[4][5] != "WHITE":
                                     white_cubes_pos[i][0] = j
                                     white_cubes_pos[i][1] = k
                         elif k == 7:
@@ -315,7 +313,7 @@ async def assembly_white():
                                     white_cubes_pos[i][0] = j
                                     white_cubes_pos[i][1] = k
                             elif j == 3:
-                                 if cube_color_pos[4][1] != "YELLOW" and cube_color_pos[4][1] != "WHITE":
+                                if cube_color_pos[4][1] != "YELLOW" and cube_color_pos[4][1] != "WHITE":
                                     white_cubes_pos[i][0] = j
                                     white_cubes_pos[i][1] = k
                     elif j == 4:
@@ -407,4 +405,17 @@ async def main():
     runloop.run(calibr())#запуск калибровки положения кубика
     runloop.run(scan_full())#запуск полного сканирования кубика
 
-runloop.run(main())
+#runloop.run(motor.run_for_degrees(port.B, 480,500))
+#runloop.sleep_ms(10)
+#cube_color_pos[0][0] = color_rgbi(color_sensor.rgbi(port.A))
+#runloop.run(motor.run_for_degrees(port.B, -130,500))
+#runloop.sleep_ms(10)
+#cube_color_pos[0][1] = color_rgbi(color_sensor.rgbi(port.A))
+#runloop.run(rotate(45))
+#runloop.run(motor.run_for_degrees(port.B, -60,500))
+#cube_color_pos[0][2] = color_rgbi(color_sensor.rgbi(port.A))
+#runloop.run(rotate(45))
+#runloop.run(motor.run_for_degrees(port.B, 30,500))
+#cube_color_pos[0][3] = color_rgbi(color_sensor.rgbi(port.A))
+runloop.run(scan_3x3(0,cube_color_pos, 3))
+print(cube_color_pos)
