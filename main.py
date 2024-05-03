@@ -53,6 +53,7 @@ def move_cube(cube_color_pos, i, color_move, COLOR_reletive_pos):
             cube_color_pos[i_pos][i] = cube_color_pos[i_pos][i+2]
         cube_color_pos[i_pos][5] = cub_now#перенос последних граней и углов на предпоследнии 
         cube_color_pos[i_pos][6] = corner_now
+        #изменение краёв в зависимости от верхней стороны
         if i_pos == 0:
             cub_now = cube_color_pos[5][7]
             corner_now = cube_color_pos[5][6]
@@ -168,12 +169,121 @@ def move_cube(cube_color_pos, i, color_move, COLOR_reletive_pos):
         cube_color_pos[i_pos][2] = corner_now_2
         cube_color_pos[i_pos][3] = cub_now#перенос последних граней и углов на предпоследнии 
         cube_color_pos[i_pos][4] = corner_now
+        #изменение краёв в зависимости от верхней стороны
         if i_pos == 0:
+            cub_now = cube_color_pos[5][7]
+            corner_now = cube_color_pos[5][6]
+            corner_now_2 = cube_color_pos[5][8]
+            cub_now_2 = cube_color_pos[i_pos + 1][5]
+            corner_now_2_1 = cube_color_pos[i_pos + 1][4]
+            corner_now_2_2 = cube_color_pos[i_pos + 1][6]
+            cube_color_pos[i_pos + 1][5] = cube_color_pos[3][1]
+            cube_color_pos[i_pos + 1][4] = cube_color_pos[3][8]
+            cube_color_pos[i_pos + 1][6] = cube_color_pos[3][2]
+            cube_color_pos[3][1] = cub_now_2
+            cube_color_pos[3][2] = corner_now_2_2
+            cube_color_pos[3][8] = corner_now_2_1
+            cube_color_pos[5][7] = cube_color_pos[4][7]
+            cube_color_pos[5][6] = cube_color_pos[4][6]
+            cube_color_pos[5][8] = cube_color_pos[4][8] 
+            cube_color_pos[4][7] = cub_now
+            cube_color_pos[4][6] = corner_now
+            cube_color_pos[4][8] = corner_now_2
         elif i_pos == 1:
+            cub_now = cube_color_pos[5][5]
+            corner_now = cube_color_pos[5][4]
+            corner_now_2 = cube_color_pos[5][6]
+            cub_now_2 = cube_color_pos[i_pos + 1][5]
+            corner_now_2_1 = cube_color_pos[i_pos + 1][4]
+            corner_now_2_2 = cube_color_pos[i_pos + 1][6]
+            cube_color_pos[i_pos + 1][5] = cube_color_pos[i_pos - 1][1]
+            cube_color_pos[i_pos + 1][4] = cube_color_pos[i_pos - 1][8]
+            cube_color_pos[i_pos + 1][6] = cube_color_pos[i_pos - 1][2]
+            cube_color_pos[i_pos - 1][1] = cub_now_2
+            cube_color_pos[i_pos - 1][2] = corner_now_2_2
+            cube_color_pos[i_pos - 1][8] = corner_now_2_1
+            cube_color_pos[5][5] = cube_color_pos[4][1]
+            cube_color_pos[5][4] = cube_color_pos[4][8]
+            cube_color_pos[5][6] = cube_color_pos[4][2] 
+            cube_color_pos[4][1] = cub_now
+            cube_color_pos[4][8] = corner_now
+            cube_color_pos[4][2] = corner_now_2
         elif i_pos == 2:
+            cub_now = cube_color_pos[5][3]
+            corner_now = cube_color_pos[5][2]
+            corner_now_2 = cube_color_pos[5][4]
+            cub_now_2 = cube_color_pos[i_pos + 1][5]
+            corner_now_2_1 = cube_color_pos[i_pos + 1][4]
+            corner_now_2_2 = cube_color_pos[i_pos + 1][6]
+            cube_color_pos[i_pos + 1][5] = cube_color_pos[i_pos - 1][1]
+            cube_color_pos[i_pos + 1][4] = cube_color_pos[i_pos - 1][8]
+            cube_color_pos[i_pos + 1][6] = cube_color_pos[i_pos - 1][2]
+            cube_color_pos[i_pos - 1][1] = cub_now_2
+            cube_color_pos[i_pos - 1][2] = corner_now_2_2
+            cube_color_pos[i_pos - 1][8] = corner_now_2_1
+            cube_color_pos[5][3] = cube_color_pos[4][3]
+            cube_color_pos[5][2] = cube_color_pos[4][2]
+            cube_color_pos[5][4] = cube_color_pos[4][4] 
+            cube_color_pos[4][3] = cub_now
+            cube_color_pos[4][2] = corner_now
+            cube_color_pos[4][4] = corner_now_2
         elif i_pos == 3:            
+            cub_now = cube_color_pos[5][1]
+            corner_now = cube_color_pos[5][2]
+            corner_now_2 = cube_color_pos[5][8]
+            cub_now_2 = cube_color_pos[0][5]
+            corner_now_2_1 = cube_color_pos[0][4]
+            corner_now_2_2 = cube_color_pos[0][6]
+            cube_color_pos[0][5] = cube_color_pos[i_pos - 1][1]
+            cube_color_pos[0][4] = cube_color_pos[i_pos - 1][8]
+            cube_color_pos[0][6] = cube_color_pos[i_pos - 1][2]
+            cube_color_pos[i_pos - 1][1] = cub_now_2
+            cube_color_pos[i_pos - 1][8] = corner_now_2_2
+            cube_color_pos[i_pos - 1][2] = corner_now_2_1
+            cube_color_pos[5][1] = cube_color_pos[4][5]
+            cube_color_pos[5][2] = cube_color_pos[4][6]
+            cube_color_pos[5][8] = cube_color_pos[4][4] 
+            cube_color_pos[4][5] = cub_now
+            cube_color_pos[4][6] = corner_now
+            cube_color_pos[4][4] = corner_now_2
         elif i_pos == 4:
+            cub_now = cube_color_pos[0][3]
+            corner_now = cube_color_pos[0][2]
+            corner_now_2 = cube_color_pos[0][4]
+            cub_now_2 = cube_color_pos[1][3]
+            corner_now_2_1 = cube_color_pos[1][2]
+            corner_now_2_2 = cube_color_pos[1][4]
+            cube_color_pos[1][3] = cube_color_pos[3][3]
+            cube_color_pos[1][2] = cube_color_pos[3][2]
+            cube_color_pos[1][4] = cube_color_pos[3][4]
+            cube_color_pos[3][3] = cub_now_2
+            cube_color_pos[3][2] = corner_now_2_2
+            cube_color_pos[3][4] = corner_now_2_1
+            cube_color_pos[0][3] = cube_color_pos[2][3]
+            cube_color_pos[0][2] = cube_color_pos[2][2]
+            cube_color_pos[0][4] = cube_color_pos[2][4] 
+            cube_color_pos[2][3] = cub_now
+            cube_color_pos[2][2] = corner_now
+            cube_color_pos[2][4] = corner_now_2
         elif i_pos == 5:
+            cub_now = cube_color_pos[0][7]
+            corner_now = cube_color_pos[0][6]
+            corner_now_2 = cube_color_pos[0][8]
+            cub_now_2 = cube_color_pos[3][7]
+            corner_now_2_1 = cube_color_pos[3][6]
+            corner_now_2_2 = cube_color_pos[3][8]
+            cube_color_pos[3][7] = cube_color_pos[1][7]
+            cube_color_pos[3][6] = cube_color_pos[1][6]
+            cube_color_pos[3][8] = cube_color_pos[1][8]
+            cube_color_pos[1][7] = cub_now_2
+            cube_color_pos[1][6] = corner_now_2_2
+            cube_color_pos[1][8] = corner_now_2_1
+            cube_color_pos[0][7] = cube_color_pos[2][7]
+            cube_color_pos[0][6] = cube_color_pos[2][6]
+            cube_color_pos[0][8] = cube_color_pos[2][8] 
+            cube_color_pos[2][7] = cub_now
+            cube_color_pos[2][6] = corner_now_2
+            cube_color_pos[2][8] = corner_now
     else:
         print("Error, move")
 def color_rgbi(rgbi):
@@ -190,6 +300,26 @@ def color_rgbi(rgbi):
         return "YELLOW"
     elif rgbi[0] > 1000 and rgbi[0] < 1200 and rgbi[1] > 1000 and rgbi[1] < 1200 and rgbi[2] > 900 and rgbi[2] < 1200:
         return "WHITE"
+    else:
+        return "none"
+async def get_color():
+    #функция калибровки получения цвета 
+    color =  color_rgbi(color_sensor.rgbi(port.A))
+    if color == "none": 
+        await motor.run_for_degrees(port.B, 2, 500, stop=motor.SMART_BREAK)#значения можно изменить сделать это нужно практически
+        color =  color_rgbi(color_sensor.rgbi(port.A)) 
+        if color == "none":
+            await motor.run_for_degrees(port.B, -4, 500, stop=motor.SMART_BREAK)
+            color =  color_rgbi(color_sensor.rgbi(port.A))
+            if color == "none":
+                runloop.run(rotate(3))#значение нужно подобрать экспрементально 
+                color =  color_rgbi(color_sensor.rgbi(port.A))
+                if color == "none":
+                    runloop.run(rotate(-6))
+                    color =  color_rgbi(color_sensor.rgbi(port.A))
+    return color
+
+
 
 """async def scan():
     await motor.run_for_degrees(port.B, 470, 500)
@@ -465,6 +595,7 @@ async def assembly_white():
                 else:
                     print("Not found on yellow edge white cubs")
             elif white_cubes_pos[i][1] == 5:
+
 """async def main():
     runloop.run(scan_full(cube_color_pos))#запуск полного сканирования кубика
 runloop.run(motor.run_for_degrees(port.B, 480,500, stop=motor.SMART_BRAKE))
@@ -481,8 +612,9 @@ runloop.run(motor.run_for_degrees(port.B, 30,500, stop=motor.SMART_BRAKE))
 cube_color_pos[0][3] = color_rgbi(color_sensor.rgbi(port.A))
 runloop.run(scan_3x3(0,cube_color_pos, 3))"""
 
-#тестирования переписовки поворота кубика
-"""cube_color_pos = [["WHITE","WHITE","RED", "YELLOW", "RED", "BLUE","BLUE","RED","RED"],["ORANGE","WHITE","WHITE", "RED", "GREEN", "ORANGE","GREEN","WHITE","ORANGE"],
+#тестирования переписовки поворота кубик
+"""
+cube_color_pos = [["WHITE","WHITE","RED", "YELLOW", "RED", "BLUE","BLUE","RED","RED"],["ORANGE","WHITE","WHITE", "RED", "GREEN", "ORANGE","GREEN","WHITE","ORANGE"],
 ["YELLOW","BLUE","YELLOW", "GREEN", "ORANGE", "RED","BLUE","BLUE","YELLOW"],["RED","WHITE","BLUE", "BLUE", "ORANGE", "RED","ORANGE","GREEN","WHITE"],
 ["GREEN","GREEN","GREEN", "ORANGE", "BLUE", "ORANGE","YELLOW","ORANGE","YELLOW"],["BLUE","YELLOW","GREEN", "YELLOW", "WHITE", "GREEN","WHITE","YELLOW","RED"]]
 COLOR_reletive_pos.update({"WHITE" : 0})
@@ -491,5 +623,5 @@ COLOR_reletive_pos.update({"RED" : 3})
 COLOR_reletive_pos.update({"BLUE" : 5})
 COLOR_reletive_pos.update({"GREEN" : 4})
 COLOR_reletive_pos.update({"YELLOW" : 2})
-move_cube(cube_color_pos, 0, "WHITE", COLOR_reletive_pos)
+move_cube(cube_color_pos, 1, "GREEN", COLOR_reletive_pos)
 print(cube_color_pos)"""
