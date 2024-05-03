@@ -153,6 +153,27 @@ def move_cube(cube_color_pos, i, color_move, COLOR_reletive_pos):
         await fixation()
         await rotate(180)
         await return_fixation()
+        i_pos = COLOR_reletive_pos.get(color_move)
+        #изменение положения кубов
+        #изменение верхней грани
+        cub_now = cube_color_pos[i_pos][7]
+        corner_now = cube_color_pos[i_pos][8]
+        cub_now_2 = cube_color_pos[i_pos][5]
+        corner_now_2 = cube_color_pos[i_pos][6]
+        cube_color_pos[i_pos][7] = cube_color_pos[i_pos][3]
+        cube_color_pos[i_pos][8] = cube_color_pos[i_pos][4]
+        cube_color_pos[i_pos][5] = cube_color_pos[i_pos][1]
+        cube_color_pos[i_pos][6] = cube_color_pos[i_pos][2]
+        cube_color_pos[i_pos][1] = cub_now_2
+        cube_color_pos[i_pos][2] = corner_now_2
+        cube_color_pos[i_pos][3] = cub_now#перенос последних граней и углов на предпоследнии 
+        cube_color_pos[i_pos][4] = corner_now
+        if i_pos == 0:
+        elif i_pos == 1:
+        elif i_pos == 2:
+        elif i_pos == 3:            
+        elif i_pos == 4:
+        elif i_pos == 5:
     else:
         print("Error, move")
 def color_rgbi(rgbi):
